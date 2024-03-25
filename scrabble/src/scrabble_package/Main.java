@@ -168,8 +168,8 @@ public class Main extends Application {
                     if (!dictionary.searchDictionary(word)){
                         System.out.println("Invalid word: " + word);
                     }
-                    System.out.println("all words valid");
                 }
+                System.out.println("all words valid");
             }
         });
 

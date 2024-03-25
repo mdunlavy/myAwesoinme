@@ -1,6 +1,8 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import javax.sound.midi.Soundbank;
+
 public class Computer {
 	
     private Player computer;
@@ -20,6 +22,13 @@ public class Computer {
 
 	
 	public boolean makeMove(){
+		
+		System.out.println("--- Comp Hand ---");
+		for (int i = 0 ; i < rack.size() ; i++){
+			System.out.print(rack.get(i).getLetter()+ " ");
+		}
+		System.out.println("\n-----------------");
+
 		maxScore = 0;
 		bestWord = new ArrayList<Tile>();
 		for (Anchor anchor : findAnchors()){
@@ -98,17 +107,23 @@ public class Computer {
 				tilesInWord.add(curTile);
 				findHighestScoringWord(remainingTiles, tilesInWord ,currentWord  + curTile.getLetter(), score + curTile.getPoints() , anchor);
 				
+				//bonus checking
 				if (currentWord.length() >= 7){
 					score += 50;
 				}
 				
 				
 				
+				System.out.println("current word: " + currentWord + curTile.getLetter());
 				//need to check if anchor is in the word before we propose it as an answer
 				if (tilesToBeUsed.contains(anchor.anchorTile) || curTile.equals(anchor.anchorTile)){
+					System.out.println("anchor in word");
 					if (isValidWord(currentWord + curTile.getLetter())){
+						System.out.println("valid word");
 						if (fitsOnBoard(anchor, tilesInWord)){
+							System.out.println("fits on board");
 							if (maxScore < score + curTile.getPoints()){
+								System.out.println("max score");
 								maxScore =  (score + curTile.getPoints()) * curTile.getWordMultiplier();
 								bestWord = tilesInWord;
 								currentAnchor = anchor;
@@ -125,6 +140,7 @@ public class Computer {
 	}
 	
 	public boolean isValidWord(String word){
+		System.out.println("checking word: " + word);
 		return dictionary.searchDictionary(word);
 	}
 	

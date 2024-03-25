@@ -26,25 +26,19 @@ public class Trie{
             }
         }
     }
-    
-     public boolean searchDictionary(String word) {
-        HashMap<Character, TrieNode> children = root.getChildren();
-        TrieNode node = null;
-        for(int i = 0; i < word.length(); i++) {
+
+    public boolean searchDictionary(String word) {
+        word = word.toLowerCase();
+        TrieNode cur = root;
+        for (int i = 0; i < word.length(); i++) {
             char c = word.charAt(i);
-            if(children.containsKey(c)) {
-                node = children.get(c);
-                children = node.getChildren();
-            } else { 
-                node = null;
-                break;
+            if (cur.getChildren().containsKey(c)) {
+                cur = cur.getChildren().get(c);
+            } else {
+                return false;
             }
         }
-        if(node != null && node.isEndOfWord()) {
-            return true;
-        } else {
-            return false;
-        }
+        return cur.isEndOfWord();
     }
 
     public boolean findPrefix(String word) {
