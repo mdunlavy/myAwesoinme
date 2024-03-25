@@ -14,13 +14,13 @@ public class GUITile extends StackPane{
     public int row;
     public int col;
     public boolean hasMultiplier = false;
-    private Rectangle top = new Rectangle(50,50, Color.TRANSPARENT);
+    private Rectangle top = new Rectangle(40,40, Color.TRANSPARENT);
 
     public GUITile(char letter, int row, int col){
         this.letter = letter;
         this.row = row;
         this.col = col;
-        this.getChildren().add(new Rectangle(50,50, javafx.scene.paint.Color.FLORALWHITE));
+        this.getChildren().add(new Rectangle(40,40, javafx.scene.paint.Color.FLORALWHITE));
 
     }
     public void setTop(Rectangle top){
@@ -69,7 +69,7 @@ public class GUITile extends StackPane{
         Label label = new Label(letter+"");
         label.setFont(new Font("Arial", 30));
         label.setTextFill(javafx.scene.paint.Color.BLACK);
-        this.getChildren().addAll(new Rectangle(50,50, javafx.scene.paint.Color.FLORALWHITE),label);
+        this.getChildren().addAll(new Rectangle(40,40, javafx.scene.paint.Color.FLORALWHITE),label);
         StackPane.setAlignment(label, Pos.CENTER);
         this.getChildren().add(top);
     }

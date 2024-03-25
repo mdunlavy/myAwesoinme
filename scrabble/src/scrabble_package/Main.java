@@ -1,4 +1,4 @@
-import javafx.animation.AnimationTimer;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,11 +13,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import javafx.scene.shape.Rectangle;
 
@@ -134,8 +132,16 @@ public class Main extends Application {
 
         GridPane BoardtoUse = initializeBoard(tileBoard);
         VBox racktoUse = initializeRack(newPlayer.getRack());
-    
-        VBox holdBoard = new VBox(BoardtoUse, racktoUse);
+
+        HBox buttons = new HBox();
+        Button endGame = new Button("End Game");
+        Button pass = new Button("Pass");
+        Button exchange = new Button("Exchange");
+        Button playWord = new Button("Play Word");
+        buttons.getChildren().addAll(endGame, pass, exchange, playWord);
+        VBox buttonBox = new VBox(buttons);
+
+        VBox holdBoard = new VBox(BoardtoUse, racktoUse, buttonBox);
 
         holdBoard.setAlignment(Pos.TOP_CENTER);
         holdBoard.setSpacing(10);
@@ -191,10 +197,6 @@ public class Main extends Application {
         //         }
         //     }
         // };
-        
-
-        //animation timer for player clicking on tiles then clicking spot on board to play them
-
 
         return new Scene(backPane, WIDTH, HEIGHT);
     }
@@ -238,7 +240,7 @@ public class Main extends Application {
                 else {
                     tile.setLabel("");
                 }
-                Rectangle rect = new Rectangle(50, 50, Color.TRANSPARENT);
+                Rectangle rect = new Rectangle(40, 40, Color.TRANSPARENT);
                 tile.setTop(rect);
                 GridPane.setRowIndex(rect, i); 
                 GridPane.setColumnIndex(rect, j);
@@ -261,7 +263,7 @@ public class Main extends Application {
             GUITile tile = new GUITile(tiles.get(i).getLetter(), 0, i);
             tile.setLetterLabel(tiles.get(i).getLetter());
             tile.setColor(Color.FLORALWHITE);
-            Rectangle rectangle = new Rectangle(50, 50, Color.TRANSPARENT);
+            Rectangle rectangle = new Rectangle(40, 40, Color.TRANSPARENT);
             tile.setTop(rectangle);
             GridPane.setRowIndex(rectangle, 0); 
             GridPane.setColumnIndex(rectangle, i);
@@ -276,7 +278,7 @@ public class Main extends Application {
         innerRack.setSpacing(10);
         innerRack.setPrefHeight(80);
         innerRack.setPrefWidth(50);
-        innerRack.setBackground(new Background(new BackgroundFill(Color.DARKBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        innerRack.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         return innerRack;
     }
