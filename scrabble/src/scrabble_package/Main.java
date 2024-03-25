@@ -157,6 +157,21 @@ public class Main extends Application {
                 primaryStage.setScene(createEndScene(false));
             }
         });
+        playWord.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Words words = new Words(tileBoard.getTileArr());
+                ArrayList<String> wordsPlayed = words.getAllWords();
+
+                System.out.println(wordsPlayed.size());
+                for (String word : wordsPlayed){
+                    if (!dictionary.searchDictionary(word)){
+                        System.out.println("Invalid word: " + word);
+                    }
+                    System.out.println("all words valid");
+                }
+            }
+        });
 
         pass.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -202,7 +217,6 @@ public class Main extends Application {
             Node node = (Node) (event.getPickResult().getIntersectedNode());
             int rowSelect = GridPane.getRowIndex(node);
             int colSelect = GridPane.getColumnIndex(node);
-            System.out.println("Selected: (" +rowSelect + ", " + colSelect+ ")");
             selectedTile = newPlayer.getRack().get(colSelect);
 
         });
@@ -212,8 +226,15 @@ public class Main extends Application {
             Node node = (Node) (event2.getPickResult().getIntersectedNode());
             int row = GridPane.getRowIndex(node);
             int col = GridPane.getColumnIndex(node);
-            System.out.println("Board: (" +row + ", " + col+ ")");
-            if (selectedTile != null && tileBoard.getTileArr()[row][col].getLetter() == ' ') playTile(selectedTile, newPlayer.getRack(), row, col, tileBoard, BoardtoUse);
+            if (selectedTile != null && tileBoard.getTileArr()[row][col].getLetter() == ' ') {
+                playTile(selectedTile, newPlayer.getRack(), row, col, tileBoard, BoardtoUse);
+            }else if (tileBoard.getTileArr()[row][col].getLetter() != ' '){
+                // add tile back to hand
+                newPlayer.getRack().add(tileBoard.getTileArr()[row][col]);
+                // remove tile from board
+                Multipliers.getInstance();
+                tileBoard.getTileArr()[row][col] = new Tile(Multipliers.letterMultiplier(col, row), Multipliers.wordMultiplier(col, row));
+            }
             racktoUse.getChildren().clear();
             newPlayer.getRack().remove(selectedTile);
             racktoUse.getChildren().add(initializeRack(newPlayer.getRack()));

@@ -5,9 +5,12 @@ public class Words {
 	private Tile[][] TileArr;
 
 	private int[][] usedTiles;
+	private static int BOARD_DIMENSIONS;
 
 	public Words(Tile[][] board){
 		TileArr = board;
+		BOARD_DIMENSIONS = board.length;
+
 		usedTiles = new int[board.length][board.length];
 		for (int i = 0; i < TileArr.length; i++){
 			for (int j = 0; j < TileArr[0].length; j++){
@@ -15,7 +18,6 @@ public class Words {
 			}
 		}
 	}
-	private static final int BOARD_DIMENSIONS = 7;
 
     public ArrayList<String> getVerticalWords(){
 		ArrayList<String> vertical = new ArrayList<>();
@@ -23,9 +25,11 @@ public class Words {
 		score = 0;
 		for (int col = 0 ; col < BOARD_DIMENSIONS ; col++){
 			for (int row = 0 ; row < BOARD_DIMENSIONS ; row++){
+				//System.out.println("row: " + row + " col: " + col + " letter: " + TileArr[row][col].getLetter());
 				if (TileArr[row][col].getLetter() == ' '){
 					if (curWord.length() > 1){
 						vertical.add(curWord.toString());
+						System.out.println(curWord.toString());
 					}
 					curWord = new StringBuilder();
 				} else {
@@ -35,6 +39,7 @@ public class Words {
 			}
 			if (curWord.length() > 1){
 				vertical.add(curWord.toString());
+				System.out.println(curWord.toString());
 			}
 			curWord = new StringBuilder();
 		}
@@ -48,6 +53,7 @@ public class Words {
 		for (int row = 0 ; row < BOARD_DIMENSIONS ; row++){
 			for (int col = 0 ; col < BOARD_DIMENSIONS ; col++){
 				if (TileArr[row][col].getLetter() == ' '){
+					System.out.println(curWord.toString());
 					if (curWord.length() > 1){
 						horizontal.add(curWord.toString());
 					}
@@ -64,7 +70,6 @@ public class Words {
 		}
 		return horizontal;
 	}
-
 	public ArrayList<String> getAllWords(){
 		ArrayList<String> allWords = new ArrayList<>();
 		allWords.addAll(getHorizontalWords());

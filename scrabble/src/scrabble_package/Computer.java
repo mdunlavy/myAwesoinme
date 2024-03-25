@@ -18,12 +18,10 @@ public class Computer {
 		this.rack = rack;
 	}
 
+	
 	public boolean makeMove(){
-
-		System.out.println("make move");
 		maxScore = 0;
 		bestWord = new ArrayList<Tile>();
-		//this is breaking 
 		for (Anchor anchor : findAnchors()){
 			ArrayList<Tile> inputTiles = new ArrayList<Tile>(rack);
 			inputTiles.add(anchor.getAnchorTile());
