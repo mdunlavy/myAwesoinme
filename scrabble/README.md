@@ -18,6 +18,6 @@ What Doesn't Work:
     - I tried to change my logic for this, but it ended up breaking too much of my algorithm
 - Taking tiles back off the board once they're placed doesn't work
 - Can't resolve wild card tiles for command line IO
-- GUI 
+- technically you can remove the computer's tiles back off unfortunately 
 - if multiple words are created by one legal play, the scoring doesn't accurately count the overlapping tiles to be used
 

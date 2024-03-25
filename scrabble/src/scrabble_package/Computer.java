@@ -12,6 +12,7 @@ public class Computer {
 	private Trie dictionary;
 	private Board board;
 	private ArrayList<Tile> rack;
+	int score = 0;
 
 	public Computer(Player computer, Trie dictionary, Board board, ArrayList<Tile> rack){
 		this.computer = computer;
@@ -20,6 +21,9 @@ public class Computer {
 		this.rack = rack;
 	}
 
+	public int getScore() {
+		return score;
+	}
 	
 	public boolean makeMove(){
 		
@@ -57,7 +61,8 @@ public class Computer {
 			System.out.println("\n");
 			Move move = new Move(bestWord , startRow , startCol ,currentAnchor.across, maxScore, computer);
 			move.execute(board.getTileArr());
-			
+			score+=maxScore;
+			System.out.println("Score: " + score);
 		}
 		return true;
 	}
@@ -72,6 +77,16 @@ public class Computer {
 	public int getMaxScore() {
 		return maxScore;
 	}
+
+	public ArrayList<Tile> getRack() {
+		return rack;
+	}
+	public void addToRack(ArrayList<Tile> rack) {
+		for (Tile tile: rack){
+			this.rack.add(tile);
+		}
+	}
+
 	
 	private int getAnchorPosition(Anchor anchor, ArrayList<Tile> word){
 		for (int c = 0 ; c < word.size() ; c++){
@@ -114,16 +129,12 @@ public class Computer {
 				
 				
 				
-				System.out.println("current word: " + currentWord + curTile.getLetter());
+			
 				//need to check if anchor is in the word before we propose it as an answer
 				if (tilesToBeUsed.contains(anchor.anchorTile) || curTile.equals(anchor.anchorTile)){
-					System.out.println("anchor in word");
 					if (isValidWord(currentWord + curTile.getLetter())){
-						System.out.println("valid word");
 						if (fitsOnBoard(anchor, tilesInWord)){
-							System.out.println("fits on board");
 							if (maxScore < score + curTile.getPoints()){
-								System.out.println("max score");
 								maxScore =  (score + curTile.getPoints()) * curTile.getWordMultiplier();
 								bestWord = tilesInWord;
 								currentAnchor = anchor;
@@ -140,7 +151,6 @@ public class Computer {
 	}
 	
 	public boolean isValidWord(String word){
-		System.out.println("checking word: " + word);
 		return dictionary.searchDictionary(word);
 	}
 	

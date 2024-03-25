@@ -32,8 +32,6 @@ public class Main extends Application {
     private Tilebag tilebag = new Tilebag();
     private Trie dictionary;
     private Tile selectedTile;
-    private boolean validMove = false;
-                
 
 
     /**
@@ -97,8 +95,8 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 try {
                     primaryStage.setScene(createStartScene());
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e){
+                    primaryStage.setScene(createEndScene(false));
                 }
 
             }
@@ -113,7 +111,8 @@ public class Main extends Application {
      * @return Scene with game information
      * @throws IOException 
      */
-    public Scene createStartScene() throws IOException {
+    public Scene createStartScene() throws Exception {
+
         backPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
         Board tileBoard = new Board(BOARDSIZE);
         tileBoard.initializeBoard();
@@ -133,9 +132,19 @@ public class Main extends Application {
 
         GridPane BoardtoUse = initializeBoard(tileBoard);
         VBox racktoUse = initializeRack(newPlayer.getRack());
-
-        Human humanMove = new Human(newPlayer, dictionary, tileBoard, newPlayer.getRack());
         Computer computer = new Computer(computerPlayer, dictionary, tileBoard, computerPlayer.getRack());
+
+        HBox scoreBox = new HBox();
+        VBox scoreBox2 = new VBox(scoreBox);
+        scoreBox2.setPadding(new Insets(10, 10, 10, 0));
+        scoreBox.setPrefHeight(HEIGHT - 200);
+        scoreBox.setPrefWidth(350);
+        scoreBox.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        Label scoreLabel = new Label("Score: " + computer.getScore());
+        System.out.println("Setting score label to: " + computer.getScore());
+        Label score = new Label("");
+        scoreBox.getChildren().addAll(scoreLabel, score);
        
 
         //buttons! 
@@ -158,18 +167,38 @@ public class Main extends Application {
             }
         });
         playWord.setOnAction(new EventHandler<ActionEvent>() {
+            int counter;
+            boolean validMove = true;
             @Override
             public void handle(ActionEvent event) {
                 Words words = new Words(tileBoard.getTileArr());
                 ArrayList<String> wordsPlayed = words.getAllWords();
-
                 System.out.println(wordsPlayed.size());
                 for (String word : wordsPlayed){
                     if (!dictionary.searchDictionary(word)){
-                        System.out.println("Invalid word: " + word);
+                        validMove = false;
                     }
                 }
-                System.out.println("all words valid");
+                if (validMove){
+                    newPlayer.addToRack(tilebag.takeOutTiles(7 - newPlayer.getRack().size()));
+                    racktoUse.getChildren().clear();
+                    racktoUse.getChildren().add(initializeRack(newPlayer.getRack()));
+                    computer.makeMove();
+                    computer.addToRack(tilebag.takeOutTiles(7 - computer.getRack().size()));
+                    BoardtoUse.getChildren().clear();
+                    BoardtoUse.getChildren().add(initializeBoard(tileBoard));
+                    scoreLabel.setText("Score: " + computer.getScore());
+                    validMove = false;
+                }else{
+                    Stage invalidMoveStage = new Stage();
+                    Pane invalidMove = new Pane();
+                    invalidMove.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+                    Label invalidLabel = new Label("Invalid Move !!!! \nOH NO!!!  \n:(");
+                    invalidLabel.setFont(Font.font("Comic Sans", 20));
+                    invalidMove.getChildren().add(invalidLabel);
+                    invalidMoveStage.setScene(new Scene(invalidMove, 200, 200));
+                    invalidMoveStage.show();
+                }
             }
         });
 
@@ -177,8 +206,10 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 computer.makeMove();
+                computer.addToRack(tilebag.takeOutTiles(7 - computer.getRack().size()));
                 BoardtoUse.getChildren().clear();
                 BoardtoUse.getChildren().add(initializeBoard(tileBoard));
+                scoreLabel.setText("Score: " + computer.getScore());
             }
         });
 
@@ -192,16 +223,7 @@ public class Main extends Application {
 
         //scoring box
 
-        HBox scoreBox = new HBox();
-        VBox scoreBox2 = new VBox(scoreBox);
-        scoreBox2.setPadding(new Insets(10, 10, 10, 0));
-        scoreBox.setPrefHeight(HEIGHT - 200);
-        scoreBox.setPrefWidth(350);
-        scoreBox.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        Label scoreLabel = new Label("Score: ");
-        Label score = new Label("0");
-        scoreBox.getChildren().addAll(scoreLabel, score);
+       
 
         HBox boardBox = new HBox(holdBoard, scoreBox2);
         boardBox.setAlignment(Pos.TOP_LEFT);
@@ -209,15 +231,12 @@ public class Main extends Application {
         backPane.setCenter(boardBox);
         // all above is to set initial scene, now create players and handle input/gameflow
         
-
-        
-        
          racktoUse.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
         {
             Node node = (Node) (event.getPickResult().getIntersectedNode());
-            int rowSelect = GridPane.getRowIndex(node);
             int colSelect = GridPane.getColumnIndex(node);
             selectedTile = newPlayer.getRack().get(colSelect);
+
 
         });
 
@@ -243,21 +262,6 @@ public class Main extends Application {
             selectedTile = null;
             node = null;
         });
-        //animation timer that waits for human move then sets scene as human move
-        // AnimationTimer  timer = new AnimationTimer(){
-        //     @Override
-        //     public void handle(long now){
-        //         if (!validMove){
-        //             Scene possibleMove = humanMove.possibleMode(tileBoard);
-        //             primaryStage.setScene(possibleMove);
-        //             updateRack(newPlayer.getRack(), racktoUse);
-
-        //             computer.makeMove();
-        //             updateBoard(tileBoard, BoardtoUse);
-        //             updateRack(computerPlayer.getRack(), racktoUse);
-        //         }
-        //     }
-        // };
 
         return new Scene(backPane, WIDTH, HEIGHT);
     }
@@ -341,7 +345,7 @@ public class Main extends Application {
         innerRack.setSpacing(10);
         innerRack.setPrefHeight(70);
         VBox outerRack = new VBox(innerRack);
-        outerRack.setMaxWidth(tileList.size() * 60);
+        outerRack.setMaxWidth(tileList.size() * 80);
         outerRack.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         
 
