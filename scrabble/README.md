@@ -1,5 +1,9 @@
 Scrabble 
 
+Scrabble, board-and-tile game in which two to four players compete in forming words with lettered tiles on a 225-square board; words spelled out by letters on the tiles interlock like words in a crossword puzzle.
+
+Players draw seven tiles from a pool at the start and replenish their supply after each turn. Tiles in the pool and those of other players are kept secret so that a player can see only those tiles on the board and his own. There are 100 letter tiles, each imprinted with a point value for different letters, approximately corresponding to the frequency of occurrence of the letter in English words. Words are scored by adding up the point values of their letters, multiplied by any of 61 premium squares that may be covered, such as double letter, triple letter, double word, and triple word.
+
 What Works: 
 - Dictionary saved in trie structure
     - Adding, deleting, searching (words & prefixes) 

@@ -147,8 +147,8 @@ public class Main extends Application {
 
         Label computerScoreLabel = new Label("Computer Score:   " + computer.getScore());
         Label playerScoreLabel = new Label("\nPlayer Score:    " + newPlayer.getScore());
-        Label score = new Label("");
-        scoreBox.getChildren().addAll(computerScoreLabel, playerScoreLabel, score);
+        Label plays = new Label("");
+        scoreBox.getChildren().addAll(computerScoreLabel, playerScoreLabel);
        
 
         //buttons! 
@@ -187,6 +187,7 @@ public class Main extends Application {
                     }
                 }
                 if (validMove){
+                    
                     playerScoreLabel.setText("\nPlayer Score: " + newPlayer.getScore());
                     newPlayer.addToRack(tilebag.takeOutTiles(7 - newPlayer.getRack().size()));
                     racktoUse.getChildren().clear();
