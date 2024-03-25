@@ -32,6 +32,7 @@ public class Main extends Application {
     private Tilebag tilebag = new Tilebag();
     private Trie dictionary;
     private Tile selectedTile;
+    private boolean validMove = false;
                 
 
 
@@ -133,6 +134,10 @@ public class Main extends Application {
         GridPane BoardtoUse = initializeBoard(tileBoard);
         VBox racktoUse = initializeRack(newPlayer.getRack());
 
+        Human humanMove = new Human(newPlayer, dictionary, tileBoard, newPlayer.getRack());
+        Computer computer = new Computer(computerPlayer, dictionary, tileBoard, computerPlayer.getRack());
+       
+
         //buttons! 
         HBox buttons = new HBox();
         Button endGame = new Button("End Game");
@@ -145,6 +150,22 @@ public class Main extends Application {
         buttons.setAlignment(Pos.CENTER);
         buttons.setSpacing(10);
         VBox buttonBox = new VBox(buttons);
+
+        endGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                primaryStage.setScene(createEndScene(false));
+            }
+        });
+
+        pass.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                computer.makeMove();
+                BoardtoUse.getChildren().clear();
+                BoardtoUse.getChildren().add(initializeBoard(tileBoard));
+            }
+        });
 
 
 
@@ -174,10 +195,7 @@ public class Main extends Application {
         // all above is to set initial scene, now create players and handle input/gameflow
         
 
-        Human humanMove = new Human(newPlayer, dictionary, tileBoard, newPlayer.getRack());
-        Computer computer = new Computer(computerPlayer, dictionary, tileBoard, computerPlayer.getRack());
-    
-       
+        
         
          racktoUse.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
         {

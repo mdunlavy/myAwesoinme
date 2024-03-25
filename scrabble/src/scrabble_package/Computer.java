@@ -278,5 +278,4 @@ public class Computer {
 		}
 		return anchors;
 	}
-	
 }
