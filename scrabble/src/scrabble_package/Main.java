@@ -139,10 +139,14 @@ public class Main extends Application {
         Button pass = new Button("Pass");
         Button exchange = new Button("Exchange");
         Button playWord = new Button("Play Word");
-        buttons.getChildren().addAll(endGame, pass, exchange, playWord);
+        //save board and rack config before user's turn, if they hit the restart button, reset GUI to this config
+        Button restartButton = new Button("Restart Turn");
+        buttons.getChildren().addAll(endGame, pass, exchange, playWord, restartButton);
         buttons.setAlignment(Pos.CENTER);
         buttons.setSpacing(10);
         VBox buttonBox = new VBox(buttons);
+
+
 
         VBox holdBoard = new VBox(BoardtoUse, racktoUse, buttonBox);
 
@@ -225,6 +229,8 @@ public class Main extends Application {
         board.getTileArr()[row][col] = new Tile(tile.getLetter());
         rack.remove(tile);
     }
+
+
     public GridPane initializeBoard (Board tileBoard){
         GridPane board = new GridPane();
         board.setPadding(new Insets(10, 10, 10, 10));
@@ -300,26 +306,6 @@ public class Main extends Application {
         outerRack.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         
 
-        return outerRack;
-    }
-    public void highLightTile(int index){
-        
-    }
-
-    //TODO : FIX THIS
-    public VBox updateRack(ArrayList<Tile> tiles, VBox outerRack){
-        HBox rack = new HBox();
-        for (int i = 0; i < tiles.size(); i++){
-            GUITile tile = new GUITile(tiles.get(i).getLetter(), 0, i);
-            tile.setLabel(tiles.get(i).getLetter() + "");
-            tile.setColor(Color.FLORALWHITE);
-            rack.getChildren().add(tile);
-        }
-
-        outerRack.setAlignment(Pos.CENTER);
-        outerRack.setSpacing(10);
-        outerRack.setPrefHeight(80);
-        outerRack.setPrefWidth(tiles.size() * 60);
         return outerRack;
     }
     /**
