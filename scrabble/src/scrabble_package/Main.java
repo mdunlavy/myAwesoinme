@@ -99,7 +99,6 @@ public class Main extends Application {
                 try {
                     primaryStage.setScene(createStartScene());
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 
@@ -145,7 +144,6 @@ public class Main extends Application {
 
         backPane.setCenter(boardBox);
         // all above is to set initial scene, now create players and handle input/gameflow
-        boolean validMove = false;
         
 
         Human humanMove = new Human(newPlayer, dictionary, tileBoard, newPlayer.getRack());
@@ -173,7 +171,10 @@ public class Main extends Application {
             racktoUse.getChildren().clear();
             newPlayer.getRack().remove(selectedTile);
             racktoUse.getChildren().add(initializeRack(newPlayer.getRack()));
+            BoardtoUse.getChildren().clear();
+            BoardtoUse.getChildren().add(initializeBoard(tileBoard));
             selectedTile = null;
+            node = null;
         });
         //animation timer that waits for human move then sets scene as human move
         // AnimationTimer  timer = new AnimationTimer(){
@@ -202,7 +203,6 @@ public class Main extends Application {
 
     public void playTile(Tile tile, ArrayList<Tile> rack, int row, int col, Board board, GridPane boardPane){
         board.getTileArr()[row][col] = new Tile(tile.getLetter());
-        updateBoard(board, boardPane);
         rack.remove(tile);
     }
     public GridPane initializeBoard (Board tileBoard){
@@ -215,7 +215,10 @@ public class Main extends Application {
         for (int i = 0; i < BOARDSIZE; i ++) {
             for (int j = 0; j < BOARDSIZE; j++) {
                 GUITile tile = new GUITile(tileBoard.getTileArr()[i][j].getLetter(), i, j);
-                if (i == 7 && j == 7){
+                if(tileBoard.getTileArr()[i][j].getLetter() != ' '){
+                    tile.setLetterLabel(tileBoard.getTileArr()[i][j].getLetter());
+                }
+                else if (i == 7 && j == 7){
                     tile.makeStar();
                 }
                 else if (Multipliers.getInstance().letterMultiplier(j, i) == 2){
@@ -244,37 +247,6 @@ public class Main extends Application {
         }
         return board;
     }
-
-    public void updateBoard(Board board, GridPane boardPane){
-        for (int i = 0; i < BOARDSIZE; i++){
-            for (int j = 0; j < BOARDSIZE; j++){
-                GUITile tile = new GUITile(board.getTileArr()[i][j].getLetter(), i, j);
-                if(board.getTileArr()[i][j].getLetter() != ' '){
-                    tile.setLetterLabel(board.getTileArr()[i][j].getLetter());
-                }
-                else if (i == 7 && j == 7){
-                    tile.makeStar();
-                }
-                else if (Multipliers.getInstance().letterMultiplier(j, i) == 2){
-                    tile.setLabel("Double \nLetter \nScore");
-                    tile.setColor(Color.LIGHTBLUE);
-                }else if (Multipliers.getInstance().letterMultiplier(j, i) == 3){
-                    tile.setLabel("Triple \nLetter \nScore");
-                    tile.setColor(Color.LIGHTCORAL);
-                }else if (Multipliers.getInstance().wordMultiplier(j, i) == 2){
-                    tile.setLabel("Double \nWord \nScore");
-                    tile.setColor(Color.LIGHTGREEN);
-                }else if (Multipliers.getInstance().wordMultiplier(j, i) == 3){
-                    tile.setLabel("Triple \nWord \nScore");
-                    tile.setColor(Color.LIGHTPINK);
-                }
-                else {
-                    tile.setLabel("");
-                }
-                boardPane.add(tile, i, j);
-            }
-        }
-    }
     public VBox initializeRack(ArrayList<Tile> tiles){
         GridPane rack = new GridPane();
         //HBox rack= new HBox();
@@ -285,9 +257,9 @@ public class Main extends Application {
         rack.setHgap(20);
         ArrayList<GUITile> tileList = new ArrayList<GUITile>();
         
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < tiles.size(); i++){
             GUITile tile = new GUITile(tiles.get(i).getLetter(), 0, i);
-            tile.setLabel(tiles.get(i).getLetter() + "");
+            tile.setLetterLabel(tiles.get(i).getLetter());
             tile.setColor(Color.FLORALWHITE);
             Rectangle rectangle = new Rectangle(50, 50, Color.TRANSPARENT);
             tile.setTop(rectangle);
