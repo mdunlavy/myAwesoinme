@@ -25,7 +25,7 @@ import javafx.scene.shape.Rectangle;
  */
 public class Main extends Application {
     private static final double WIDTH = 1000.0;
-    private static final double HEIGHT = 1000.0;
+    private static final double HEIGHT = 800.0;
     private Stage primaryStage = new Stage();
     private BorderPane backPane = new BorderPane();
     private int BOARDSIZE = 15;
@@ -133,20 +133,38 @@ public class Main extends Application {
         GridPane BoardtoUse = initializeBoard(tileBoard);
         VBox racktoUse = initializeRack(newPlayer.getRack());
 
+        //buttons! 
         HBox buttons = new HBox();
         Button endGame = new Button("End Game");
         Button pass = new Button("Pass");
         Button exchange = new Button("Exchange");
         Button playWord = new Button("Play Word");
         buttons.getChildren().addAll(endGame, pass, exchange, playWord);
+        buttons.setAlignment(Pos.CENTER);
+        buttons.setSpacing(10);
         VBox buttonBox = new VBox(buttons);
 
         VBox holdBoard = new VBox(BoardtoUse, racktoUse, buttonBox);
 
         holdBoard.setAlignment(Pos.TOP_CENTER);
         holdBoard.setSpacing(10);
-        HBox boardBox = new HBox(holdBoard);
-        boardBox.setAlignment(Pos.CENTER);
+
+
+        //scoring box
+
+        HBox scoreBox = new HBox();
+        VBox scoreBox2 = new VBox(scoreBox);
+        scoreBox2.setPadding(new Insets(10, 10, 10, 0));
+        scoreBox.setPrefHeight(HEIGHT - 200);
+        scoreBox.setPrefWidth(350);
+        scoreBox.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        Label scoreLabel = new Label("Score: ");
+        Label score = new Label("0");
+        scoreBox.getChildren().addAll(scoreLabel, score);
+
+        HBox boardBox = new HBox(holdBoard, scoreBox2);
+        boardBox.setAlignment(Pos.TOP_LEFT);
 
         backPane.setCenter(boardBox);
         // all above is to set initial scene, now create players and handle input/gameflow
@@ -273,14 +291,16 @@ public class Main extends Application {
         for(GUITile tile : tileList){
             rack.add(tile, tile.getCol(), tile.getRow());
         }
-        VBox innerRack = new VBox(rack);
+        HBox innerRack = new HBox(rack);
         innerRack.setAlignment(Pos.CENTER);
         innerRack.setSpacing(10);
-        innerRack.setPrefHeight(80);
-        innerRack.setPrefWidth(50);
-        innerRack.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        innerRack.setPrefHeight(70);
+        VBox outerRack = new VBox(innerRack);
+        outerRack.setMaxWidth(tileList.size() * 60);
+        outerRack.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        
 
-        return innerRack;
+        return outerRack;
     }
     public void highLightTile(int index){
         
