@@ -26,12 +26,6 @@ public class Computer {
 	}
 	
 	public boolean makeMove(){
-		
-		System.out.println("--- Comp Hand ---");
-		for (int i = 0 ; i < rack.size() ; i++){
-			System.out.print(rack.get(i).getLetter()+ " ");
-		}
-		System.out.println("\n-----------------");
 
 		maxScore = 0;
 		bestWord = new ArrayList<Tile>();
@@ -54,15 +48,9 @@ public class Computer {
 				startRow = currentAnchor.row - getAnchorPosition(currentAnchor, bestWord);
 			}
 			
-			System.out.print("best word: ");
-			for (Tile tile: bestWord){
-				System.out.print(tile.getLetter());
-			}
-			System.out.println("\n");
 			Move move = new Move(bestWord , startRow , startCol ,currentAnchor.across, maxScore, computer);
 			move.execute(board.getTileArr());
 			score+=maxScore;
-			System.out.println("Score: " + score);
 		}
 		return true;
 	}

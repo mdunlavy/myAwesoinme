@@ -16,7 +16,11 @@ import javafx.scene.paint.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import javax.sound.midi.Soundbank;
+
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -141,10 +145,10 @@ public class Main extends Application {
         scoreBox.setPrefWidth(350);
         scoreBox.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        Label scoreLabel = new Label("Score: " + computer.getScore());
-        System.out.println("Setting score label to: " + computer.getScore());
+        Label computerScoreLabel = new Label("Computer Score:   " + computer.getScore());
+        Label playerScoreLabel = new Label("\nPlayer Score:    " + newPlayer.getScore());
         Label score = new Label("");
-        scoreBox.getChildren().addAll(scoreLabel, score);
+        scoreBox.getChildren().addAll(computerScoreLabel, playerScoreLabel, score);
        
 
         //buttons! 
@@ -166,8 +170,10 @@ public class Main extends Application {
                 primaryStage.setScene(createEndScene(false));
             }
         });
+
+
+
         playWord.setOnAction(new EventHandler<ActionEvent>() {
-            int counter;
             boolean validMove = true;
             @Override
             public void handle(ActionEvent event) {
@@ -176,10 +182,12 @@ public class Main extends Application {
                 System.out.println(wordsPlayed.size());
                 for (String word : wordsPlayed){
                     if (!dictionary.searchDictionary(word)){
+                        System.out.println("Invalid move: " + word);
                         validMove = false;
                     }
                 }
                 if (validMove){
+                    playerScoreLabel.setText("\nPlayer Score: " + newPlayer.getScore());
                     newPlayer.addToRack(tilebag.takeOutTiles(7 - newPlayer.getRack().size()));
                     racktoUse.getChildren().clear();
                     racktoUse.getChildren().add(initializeRack(newPlayer.getRack()));
@@ -187,8 +195,7 @@ public class Main extends Application {
                     computer.addToRack(tilebag.takeOutTiles(7 - computer.getRack().size()));
                     BoardtoUse.getChildren().clear();
                     BoardtoUse.getChildren().add(initializeBoard(tileBoard));
-                    scoreLabel.setText("Score: " + computer.getScore());
-                    validMove = false;
+                    computerScoreLabel.setText("Computer Score: " + computer.getScore());
                 }else{
                     Stage invalidMoveStage = new Stage();
                     Pane invalidMove = new Pane();
@@ -198,6 +205,7 @@ public class Main extends Application {
                     invalidMove.getChildren().add(invalidLabel);
                     invalidMoveStage.setScene(new Scene(invalidMove, 200, 200));
                     invalidMoveStage.show();
+                    validMove = true;
                 }
             }
         });
@@ -209,7 +217,8 @@ public class Main extends Application {
                 computer.addToRack(tilebag.takeOutTiles(7 - computer.getRack().size()));
                 BoardtoUse.getChildren().clear();
                 BoardtoUse.getChildren().add(initializeBoard(tileBoard));
-                scoreLabel.setText("Score: " + computer.getScore());
+                computerScoreLabel.setText("Computer Score: " + computer.getScore());
+
             }
         });
 
@@ -247,12 +256,14 @@ public class Main extends Application {
             int col = GridPane.getColumnIndex(node);
             if (selectedTile != null && tileBoard.getTileArr()[row][col].getLetter() == ' ') {
                 playTile(selectedTile, newPlayer.getRack(), row, col, tileBoard, BoardtoUse);
+                newPlayer.addToScore(selectedTile.getPoints() * Multipliers.letterMultiplier(col, row));
             }else if (tileBoard.getTileArr()[row][col].getLetter() != ' '){
                 // add tile back to hand
                 newPlayer.getRack().add(tileBoard.getTileArr()[row][col]);
                 // remove tile from board
                 Multipliers.getInstance();
                 tileBoard.getTileArr()[row][col] = new Tile(Multipliers.letterMultiplier(col, row), Multipliers.wordMultiplier(col, row));
+                newPlayer.updateScore(-1 * tileBoard.getTileArr()[row][col].getPoints() * Multipliers.letterMultiplier(col, row));
             }
             racktoUse.getChildren().clear();
             newPlayer.getRack().remove(selectedTile);
@@ -379,5 +390,6 @@ public class Main extends Application {
        
         return new Scene(layout, WIDTH, HEIGHT);
     }
+
     
 }

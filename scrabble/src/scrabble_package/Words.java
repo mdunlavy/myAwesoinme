@@ -70,6 +70,7 @@ public class Words {
 		}
 		return horizontal;
 	}
+	
 	public ArrayList<String> getAllWords(){
 		ArrayList<String> allWords = new ArrayList<>();
 		allWords.addAll(getHorizontalWords());
